@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package ml;
+
+// Сервис для работы с моделью
+service MLModel {
+  // Unary RPC: клиент отправляет один запрос — сервер возвращает один ответ
+  rpc GenerateUnary (PromptRequest) returns (ModelResponse);
+
+  // Streaming RPC: клиент отправляет запрос — сервер стримит токены
+  rpc GenerateStream (PromptRequest) returns (stream TokenResponse);
+}
+
+// Запрос от клиента
+message PromptRequest {
+  string data = 1;    // Входной текст (например, вопрос)
+  string type = 2;    // Тип запроса (например, "text" или "chat")
+}
+
+// Ответ от модели (один раз)
+message ModelResponse {
+  string text = 1;    // Полный ответ
+  string model_name = 2;  // Имя модели (для информации)
+}
+
+// Токен из генерации (отправляем стримом)
+message TokenResponse {
+  string token = 1;   // Один токен
+}
